@@ -21,9 +21,10 @@ $(function () {
   //to test different current hours, please use 24-hour format
   //let currentHour = 13;
 
-  //create divisions for each hour from 9:00 - 18:00 - 9am-5pm sections
+  //selecting container for schedule
   const containerAllHours = $(".container-lg");
 
+  //creating array for all available hours to display
   const availableHours = [
     "9 AM",
     "10 AM",
@@ -36,8 +37,9 @@ $(function () {
     "5 PM",
   ];
 
+  //getting current data from local storage
   let localStorageData = JSON.parse(localStorage.getItem("schedule"));
-  console.log(localStorageData);
+  //console.log(localStorageData);
 
   let taskToRender = "";
   let timeOfTaskToRender = "";
@@ -47,15 +49,14 @@ $(function () {
     const hourDiv = $("<div>");
     hourDiv.addClass("row time-block");
 
-
-//formatting hour from displayed to 24 hour format to be able to compare
-    let hourDisplayed = parseInt(availableHours[i].split(" ")[0]);
+    //formatting hour from displayed to 24 hour format to be able to compare
+    let displayedHour = parseInt(availableHours[i].split(" ")[0]);
     let timeOfTheDay = availableHours[i].split(" ")[1];
     let formattedHour = 0;
-    if (timeOfTheDay === "PM" && hourDisplayed !== 12) {
-      formattedHour = hourDisplayed + 12;
+    if (timeOfTheDay === "PM" && displayedHour !== 12) {
+      formattedHour = displayedHour + 12;
     } else {
-      formattedHour = hourDisplayed;
+      formattedHour = displayedHour;
     }
 
     //adding past/present/future classes based on the current hour
@@ -76,12 +77,15 @@ $(function () {
     taskDescription.addClass("col-8 col-md-10 description");
     taskDescription.attr("rows", "3");
 
+    //if data saved to local storage, rendering to the page task. Always last saved task will display for that hour since going thought all the stored data and reassigning task description accordingly
     if (localStorageData !== null) {
       for (let j = 0; j < localStorageData.length; j++) {
         timeOfTaskToRender = localStorageData[j].taskHour;
         taskToRender = localStorageData[j].taskContent;
         // console.log("Time: " + timeOfTaskToRender);
         // console.log("Task: " + taskToRender);
+
+        //comparing the hour that is being rendered if it has any tasks already stored in the storage against it
         if (availableHours[i] === timeOfTaskToRender) {
           taskDescription.text(taskToRender);
         }
@@ -104,25 +108,40 @@ $(function () {
     saveBtn.on("click", function (event) {
       event.preventDefault();
       //console.log(event.target.type);
+      //console.log(event.target);
+      console.log ($(this));
+      console.log($(this).prev());
+      console.log($(this).prev()[0].value);
+      console.log($(this).prev().prev()[0].textContent);
 
-      let targetTextArea;
+      //let targetTextArea;
+
+      //let targetTextArea = $(this).prev();
+
       //if user clicks on save image, need to get to parent button and then previous sibling, text area; otherwise, if user clicks the button itself, just looking for previous sibling, text area
-      if (event.target.type === undefined) {
-        targetTextArea = event.target.parentElement.previousElementSibling;
-      } else if (event.target.type === "submit") {
-        targetTextArea = event.target.previousElementSibling;
-      }
+      // if (event.target.type === undefined) {
+      //   targetTextArea = event.target.parentElement.previousElementSibling;
+      // } else if (event.target.type === "submit") {
+      //   targetTextArea = event.target.previousElementSibling;
+      // }
 
       //getting hours from previous sibling of text area
-      let hourSelected = targetTextArea.previousElementSibling.innerHTML;
+      // let hourSelected = targetTextArea.previousElementSibling.innerHTML;
+      // let targetTextArea = $(this).prev(value);
+      // let hourSelected = targetTextArea.prev(value);
 
       //console.log(hourSelected);
       //console.log(targetTextArea);
 
       //object to store schedule details
+      // let scheduleDetails = {
+      //   taskContent: targetTextArea.value.trim(),
+      //   taskHour: hourSelected,
+      // };
+
       let scheduleDetails = {
-        taskContent: targetTextArea.value.trim(),
-        taskHour: hourSelected,
+        taskContent: $(this).prev()[0].value,
+        taskHour: $(this).prev().prev()[0].textContent,
       };
 
       //pushing details into local storage data array
