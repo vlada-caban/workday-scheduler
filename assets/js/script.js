@@ -18,7 +18,8 @@ $(function () {
   let currentHour = dayjs().hour();
   //console.log(currentHour);
 
-  //let currentHour =17;
+  //to test different current hours, please use 24-hour format
+  //let currentHour = 13;
 
   //create divisions for each hour from 9:00 - 18:00 - 9am-5pm sections
   const containerAllHours = $(".container-lg");
@@ -46,14 +47,17 @@ $(function () {
     const hourDiv = $("<div>");
     hourDiv.addClass("row time-block");
 
-    let hour = parseInt(availableHours[i].split(" ")[0]);
+
+//formatting hour from displayed to 24 hour format to be able to compare
+    let hourDisplayed = parseInt(availableHours[i].split(" ")[0]);
     let timeOfTheDay = availableHours[i].split(" ")[1];
     let formattedHour = 0;
-    if (timeOfTheDay === "PM" && hour !== 12) {
-      formattedHour = hour + 12;
+    if (timeOfTheDay === "PM" && hourDisplayed !== 12) {
+      formattedHour = hourDisplayed + 12;
     } else {
-      formattedHour = hour;
+      formattedHour = hourDisplayed;
     }
+
     //adding past/present/future classes based on the current hour
     if (currentHour === formattedHour) {
       hourDiv.addClass("present");
@@ -66,7 +70,7 @@ $(function () {
     const hourTitleDiv = $("<div>");
     hourTitleDiv.text(availableHours[i]);
     hourTitleDiv.addClass("col-2 col-md-1 hour text-center py-3");
-    console.log(availableHours[i]);
+    //console.log(availableHours[i]);
 
     const taskDescription = $("<textarea>");
     taskDescription.addClass("col-8 col-md-10 description");
@@ -102,25 +106,26 @@ $(function () {
       //console.log(event.target.type);
 
       let targetTextArea;
-
+      //if user clicks on save image, need to get to parent button and then previous sibling, text area; otherwise, if user clicks the button itself, just looking for previous sibling, text area
       if (event.target.type === undefined) {
         targetTextArea = event.target.parentElement.previousElementSibling;
       } else if (event.target.type === "submit") {
         targetTextArea = event.target.previousElementSibling;
       }
 
-      // let hourSelected = targetTextArea.previousElementSibling.innerHTML.split(" ")[0];
-
+      //getting hours from previous sibling of text area
       let hourSelected = targetTextArea.previousElementSibling.innerHTML;
 
       //console.log(hourSelected);
       //console.log(targetTextArea);
 
+      //object to store schedule details
       let scheduleDetails = {
-        taskContent: targetTextArea.value,
+        taskContent: targetTextArea.value.trim(),
         taskHour: hourSelected,
       };
 
+      //pushing details into local storage data array
       if (localStorageData === null) {
         localStorageData = [];
         localStorageData.push(scheduleDetails);
@@ -128,6 +133,7 @@ $(function () {
         localStorageData.push(scheduleDetails);
       }
 
+      //saving local storage data array into localStorage in the browser
       localStorage.setItem("schedule", JSON.stringify(localStorageData));
     });
   }
