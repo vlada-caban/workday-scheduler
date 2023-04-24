@@ -1,17 +1,8 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 $(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-
   //getting today's date
   const today = dayjs();
+
+  //displaying today's date in dedicated section
   $("#currentDay").text(today.format("MMM D, YYYY"));
 
   //getting current hour
@@ -44,8 +35,10 @@ $(function () {
   let taskToRender = "";
   let timeOfTaskToRender = "";
 
+  //let updatedStorageData = [];
+
   for (let i = 0; i < availableHours.length; i++) {
-    //creating div for each hour without past/present/future classes
+    //creating div for each hour without past/present/future classes first
     const hourDiv = $("<div>");
     hourDiv.addClass("row time-block");
 
@@ -77,13 +70,11 @@ $(function () {
     taskDescription.addClass("col-8 col-md-10 description");
     taskDescription.attr("rows", "3");
 
-    //if data saved to local storage, rendering to the page task. Always last saved task will display for that hour since going thought all the stored data and reassigning task description accordingly
+    //if storage not empty, rendering tasks to the page
     if (localStorageData !== null) {
       for (let j = 0; j < localStorageData.length; j++) {
         timeOfTaskToRender = localStorageData[j].taskHour;
         taskToRender = localStorageData[j].taskContent;
-        // console.log("Time: " + timeOfTaskToRender);
-        // console.log("Task: " + taskToRender);
 
         //comparing the hour that is being rendered if it has any tasks already stored in the storage against it
         if (availableHours[i] === timeOfTaskToRender) {
@@ -107,42 +98,35 @@ $(function () {
 
     saveBtn.on("click", function (event) {
       event.preventDefault();
-      //console.log(event.target.type);
-      //console.log(event.target);
-      console.log ($(this));
-      console.log($(this).prev());
-      console.log($(this).prev()[0].value);
-      console.log($(this).prev().prev()[0].textContent);
 
-      //let targetTextArea;
+      // console.log($(this));
+      // console.log($(this).prev());
+      // console.log($(this).prev()[0].value);
+      // console.log($(this).prev().prev()[0].textContent);
 
-      //let targetTextArea = $(this).prev();
-
-      //if user clicks on save image, need to get to parent button and then previous sibling, text area; otherwise, if user clicks the button itself, just looking for previous sibling, text area
-      // if (event.target.type === undefined) {
-      //   targetTextArea = event.target.parentElement.previousElementSibling;
-      // } else if (event.target.type === "submit") {
-      //   targetTextArea = event.target.previousElementSibling;
-      // }
-
-      //getting hours from previous sibling of text area
-      // let hourSelected = targetTextArea.previousElementSibling.innerHTML;
-      // let targetTextArea = $(this).prev(value);
-      // let hourSelected = targetTextArea.prev(value);
-
-      //console.log(hourSelected);
-      //console.log(targetTextArea);
-
-      //object to store schedule details
-      // let scheduleDetails = {
-      //   taskContent: targetTextArea.value.trim(),
-      //   taskHour: hourSelected,
-      // };
-
+      //storing into object task and hour of the clicked button
       let scheduleDetails = {
         taskContent: $(this).prev()[0].value,
         taskHour: $(this).prev().prev()[0].textContent,
       };
+
+      //!before pushing to local storage, need to check if this hour already had task and update that entry OR remove and add new
+
+      // if (localStorageData === null) {
+      //   localStorageData = [];
+      //   localStorageData.push(scheduleDetails);
+      //   localStorage.setItem("schedule", JSON.stringify(localStorageData));
+      // } else {
+      //   for (let k = 0; k < localStorageData.length; k++) {
+      //     if (scheduleDetails.taskHour === localStorageData[k].taskHour) {
+      //       updatedStorageData = localStorageData.filter(
+      //         (e) => !localStorageData.includes(scheduleDetails.taskHour)
+      //       );
+      //     }
+      //     updatedStorageData.push(scheduleDetails);
+      //   }
+      //   localStorage.setItem("schedule", JSON.stringify(updatedStorageData));
+      // }
 
       //pushing details into local storage data array
       if (localStorageData === null) {
@@ -157,17 +141,4 @@ $(function () {
     });
   }
 
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-
-  // TODO: Add code to display the current date in the header of the page.
 });
