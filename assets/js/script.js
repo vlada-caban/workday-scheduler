@@ -8,7 +8,7 @@ $(function () {
   //getting current hour
   let currentHour = dayjs().hour();
 
-  //to test different current hours, please use 24-hour format
+  //to test different current hours, please comment out line 9 and uncomment line 12. Please use 24-hour format.
   //let currentHour = 13;
 
   //selecting container for schedule
