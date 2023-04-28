@@ -7,7 +7,6 @@ $(function () {
 
   //getting current hour
   let currentHour = dayjs().hour();
-  //console.log(currentHour);
 
   //to test different current hours, please use 24-hour format
   //let currentHour = 13;
@@ -30,12 +29,9 @@ $(function () {
 
   //getting current data from local storage
   let localStorageData = JSON.parse(localStorage.getItem("schedule"));
-  //console.log(localStorageData);
 
   let taskToRender = "";
   let timeOfTaskToRender = "";
-
-  //let updatedStorageData = [];
 
   for (let i = 0; i < availableHours.length; i++) {
     //creating div for each hour without past/present/future classes first
@@ -61,14 +57,8 @@ $(function () {
       hourDiv.addClass("future");
     }
 
-    const hourTitleDiv = $("<div>");
-    hourTitleDiv.text(availableHours[i]);
-    hourTitleDiv.addClass("col-2 col-md-1 hour text-center py-3");
-    //console.log(availableHours[i]);
-
-    const taskDescription = $("<textarea>");
-    taskDescription.addClass("col-8 col-md-10 description");
-    taskDescription.attr("rows", "3");
+    const hourTitleDiv = $("<div>").text(availableHours[i]).addClass("col-2 col-md-1 hour text-center py-3");
+    const taskDescription = $("<textarea>").addClass("col-8 col-md-10 description").attr("rows", "3");
 
     //if storage not empty, rendering tasks to the page
     if (localStorageData !== null) {
@@ -83,13 +73,8 @@ $(function () {
       }
     }
 
-    const saveBtn = $("<button>");
-    saveBtn.addClass("btn saveBtn col-2 col-md-1");
-    saveBtn.attr("aria-label", "save");
-
-    const iArea = $("<i>");
-    iArea.addClass("fas fa-save");
-    iArea.attr("aria-hidden", "true");
+    const saveBtn = $("<button>").addClass("btn saveBtn col-2 col-md-1").attr("aria-label", "save");
+    const iArea = $("<i>").addClass("fas fa-save").attr("aria-hidden", "true");
 
     saveBtn.append(iArea);
     hourDiv.append(hourTitleDiv, taskDescription, saveBtn);
@@ -99,34 +84,11 @@ $(function () {
     saveBtn.on("click", function (event) {
       event.preventDefault();
 
-      // console.log($(this));
-      // console.log($(this).prev());
-      // console.log($(this).prev()[0].value);
-      // console.log($(this).prev().prev()[0].textContent);
-
       //storing into object task and hour of the clicked button
       let scheduleDetails = {
         taskContent: $(this).prev()[0].value,
         taskHour: $(this).prev().prev()[0].textContent,
       };
-
-      //!before pushing to local storage, need to check if this hour already had task and update that entry OR remove and add new
-
-      // if (localStorageData === null) {
-      //   localStorageData = [];
-      //   localStorageData.push(scheduleDetails);
-      //   localStorage.setItem("schedule", JSON.stringify(localStorageData));
-      // } else {
-      //   for (let k = 0; k < localStorageData.length; k++) {
-      //     if (scheduleDetails.taskHour === localStorageData[k].taskHour) {
-      //       updatedStorageData = localStorageData.filter(
-      //         (e) => !localStorageData.includes(scheduleDetails.taskHour)
-      //       );
-      //     }
-      //     updatedStorageData.push(scheduleDetails);
-      //   }
-      //   localStorage.setItem("schedule", JSON.stringify(updatedStorageData));
-      // }
 
       //pushing details into local storage data array
       if (localStorageData === null) {
